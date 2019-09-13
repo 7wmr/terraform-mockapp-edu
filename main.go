@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 	"os/exec"
-	"strings"
+	//"strings"
 )
 
 // Request - declare structure
@@ -27,7 +27,8 @@ func (r *Request) SetHostname() {
 		r.Hostname = "Unknown"
 		return
 	}
-	r.Hostname = strings.ReplaceAll(string(stdout), "\n", "")
+	// r.Hostname = strings.ReplaceAll(string(stdout), "\n", "")
+	r.Hostname = string(stdout)
 }
 
 // NewRequest - this will accept a new request.
