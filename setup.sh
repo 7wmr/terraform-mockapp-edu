@@ -16,7 +16,7 @@ export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 EOF
 
-. ~/.bashrc
+source ~/.bashrc
 
 echo "Installing package - gin gonic"
 go get "github.com/gin-gonic/gin"
