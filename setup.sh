@@ -3,15 +3,15 @@
 curl -O https://storage.googleapis.com/golang/go1.11.8.linux-amd64.tar.gz
 
 tar -xf go1.11.8.linux-amd64.tar.gz && rm go1.11.8.linux-amd64.tar.gz
-sudo mv go /usr/local && sudo mkdir -p /usr/local/gopath
+mv go /usr/local
 
 echo "set enviornment variables required for Go"
 export GOROOT=/usr/local/go
-export GOPATH=/usr/local/gopath
-cat <<EOF >> ~/.bashrc
+export GOPATH=$HOME/go
+cat <<'EOF' >> ~/.bashrc
 export GOROOT=/usr/local/go
-export GOPATH=/usr/local/gopath
-export PATH=\$GOPATH/bin:\$GOROOT/bin:\$PATH
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 EOF
 
 . ~/.bashrc
