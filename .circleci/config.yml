@@ -18,20 +18,16 @@ jobs:
           name: Build golang application
           command: |
             gox -os "linux" -os "darwin" -arch "amd64" -output "artifacts/mockapp_{{.OS}}_{{.Arch}}"
-#      - store_artifacts:
-#          path: artifacts
-#          destination: artifacts
       - persist_to_workspace:
-          root: /tmp/artifacts
-          paths: artifacts/*
+          root: .
+          paths: .
 
   publish-github:
     docker:
       - image: cibuilds/github:0.10
     steps:
-      - checkout
       - attach_workspace:
-          at: /tmp/artifacts
+          at: /go/src/github.com/7wmr/terraform-mockapp-edu
       - run: 
           name: Publish release to GitHub
           command: |
