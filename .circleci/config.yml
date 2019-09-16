@@ -3,9 +3,11 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12.9
-    working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
+    working_directory: ~/app
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/app
       - run: 
           name: Install gox build tool
           command: go get github.com/mitchellh/gox
@@ -18,22 +20,29 @@ jobs:
           name: Build golang application
           command: |
             gox -os "linux" -os "darwin" -arch "amd64" -output "dist/mockapp_{{.OS}}_{{.Arch}}"
+      - run:
+          name: Store version number
+          command: |
+            git describe --tags | tee dist/version.txt
       - persist_to_workspace:
           root: .
-          paths: .
+          paths: dist
 
   publish-github:
     docker:
       - image: cibuilds/github:0.10
+    working_directory: ~/mockapp
     steps:
       - attach_workspace:
-          at: /go/src/github.com/7wmr/terraform-mockapp-edu
+          at: ~/app 
       - run: 
           name: Publish release to GitHub
           command: |
+            VERSION=`cat ./dist/version.txt`
             ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
-                dist/
+                --delete ${VERSION}
+                ./dist/
 
 workflows:
   version: 2
