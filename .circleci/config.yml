@@ -55,7 +55,6 @@ workflows:
           filters:
             branches:
               only:
-                - develop
                 - master
       - publish-github:
           filters:
