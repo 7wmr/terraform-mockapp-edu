@@ -31,10 +31,11 @@ jobs:
   publish-github:
     docker:
       - image: cibuilds/github:0.10
-    working_directory: ~/mockapp
+    working_directory: ~/app
     steps:
       - attach_workspace:
           at: ~/app 
+      - run: ls -la
       - run: 
           name: Publish release to GitHub
           command: |
