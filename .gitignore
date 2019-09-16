@@ -15,3 +15,7 @@
 # Vagrant files
 *.log
 .vagrant/
+
+
+# Golang builds
+artifacts/
