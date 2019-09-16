@@ -40,13 +40,9 @@ jobs:
           name: Publish release to GitHub
           command: |
             VERSION=`cat ./dist/version.txt`
-            echo $VERSION
-            ghr -t $GITHUB_TOKEN \
-                -u $CIRCLE_PROJECT_USERNAME \
-                -r $CIRCLE_PROJECT_REPONAME \
-                -c $CIRCLE_SHA1 \
-                -delete $VERSION \
-                $VERSION dist/
+            rm -f ./dist/version.txt 
+            echo "Version:  ${VERSION}"
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -delete $VERSION ./dist/
 
 workflows:
   version: 2
