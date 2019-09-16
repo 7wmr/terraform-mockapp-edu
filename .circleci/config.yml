@@ -1,42 +1,43 @@
-version: 2
-jobs:
-  build:
-    docker:
-      - image: circleci/golang:1.12.9
-    working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
-    steps:
-      - checkout
-      - run: 
-          name: Install gox build tool
-          command: go get github.com/mitchellh/gox
-      - run:
-          name: Install golang modules
-          command: |
-            go get github.com/gin-gonic/gin \
-            && go get github.com/satori/go.uuid
-      - run: 
-          name: Build golang application
-          command: |
-            gox -os "linux" -os "darwin" -arch "amd64" -output "artifacts/mockapp_{{.OS}}_{{.Arch}}"
-      - store_artifacts:
-          path: artifacts
+workflows:
+  version: 2
+  jobs:
+    build:
+      docker:
+        - image: circleci/golang:1.12.9
+      working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
+      steps:
+        - checkout
+        - run: 
+            name: Install gox build tool
+            command: go get github.com/mitchellh/gox
+        - run:
+            name: Install golang modules
+            command: |
+              go get github.com/gin-gonic/gin \
+              && go get github.com/satori/go.uuid
+        - run: 
+            name: Build golang application
+            command: |
+              gox -os "linux" -os "darwin" -arch "amd64" -output "artifacts/mockapp_{{.OS}}_{{.Arch}}"
+        - store_artifacts:
+            path: artifacts
 
-  publish-github-release:
-    docker:
-      - image: cibuilds/github:0.10
-    requires:
-      - build
-    filters:
-      branches:
-        only: master
-      tags:
-        only: /^\d+\.\d+\.\d+$/
-    steps:
-      - attach_workspace:
-          at: ./artifacts
-      - run: 
-          name: Publish release to GitHub
-          command: |
-            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
-                -r $CIRCLE_PROJECT_REPONAME \
-                --replace `git describe --tags` artifacts/
+    publish-github-release:
+      docker:
+        - image: cibuilds/github:0.10
+      requires:
+        - build
+      filters:
+        branches:
+          only: master
+        tags:
+          only: /^\d+\.\d+\.\d+$/
+      steps:
+        - attach_workspace:
+            at: ./artifacts
+        - run: 
+            name: Publish release to GitHub
+            command: |
+              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
+                  -r $CIRCLE_PROJECT_REPONAME \
+                  --replace `git describe --tags` artifacts/
