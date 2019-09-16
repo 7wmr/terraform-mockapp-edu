@@ -14,12 +14,12 @@ jobs:
           command: |
             go get github.com/gin-gonic/gin \
             && go get github.com/satori/go.uuid
-
       - run: 
           name: Build golang application
           command: |
-            gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" \
-                -output "dist/ncd_{{.OS}}_{{.Arch}}"
+            gox -os "linux" -os "darwin" -arch "amd64" -output "artifacts/mockapp_{{.OS}}_{{.Arch}}"
+      - store_artifacts:
+          path: artifacts
 
   publish-github-release:
     docker:
