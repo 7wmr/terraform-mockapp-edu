@@ -1,10 +1,11 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 	"os/exec"
-	//"strings"
 )
 
 // Request - declare structure
@@ -40,12 +41,12 @@ func NewRequest(c *gin.Context) {
 }
 
 func main() {
+	port := flag.Int("port", 8080, "Web server port")
 	router := gin.Default()
 
 	v1 := router.Group("api/v1")
 	{
 		v1.GET("/info", NewRequest)
 	}
-
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%d", *port))
 }
