@@ -35,14 +35,17 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/app 
-      - run: ls -laR
       - run: 
           name: Publish release to GitHub
           command: |
             VERSION=`cat ./dist/version.txt`
             rm -f ./dist/version.txt 
             echo "Version:  ${VERSION}"
-            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -delete $VERSION ./dist/
+            ghr -t $GITHUB_TOKEN \
+                -u $CIRCLE_PROJECT_USERNAME \
+                -r $CIRCLE_PROJECT_REPONAME \
+                -c $CIRCLE_SHA1 \
+                -delete $VERSION ./dist/
 
 workflows:
   version: 2
