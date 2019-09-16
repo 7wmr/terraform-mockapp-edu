@@ -29,6 +29,7 @@ jobs:
     docker:
       - image: cibuilds/github:0.10
     steps:
+      - checkout
       - attach_workspace:
           at: /tmp/artifacts
       - run: 
@@ -36,7 +37,7 @@ jobs:
           command: |
             ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
-                --replace `git describe --tags` artifacts/
+                --replace `git describe --tags` /tmp/artifacts/
 
 workflows:
   version: 2
