@@ -28,4 +28,11 @@ jobs:
       - build
     branch: master
     steps:
-      - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+      - attach_workspace:
+          at: ./artifacts
+      - run: 
+          name: Publish release to GitHub
+          command: |
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
+                -r $CIRCLE_PROJECT_REPONAME \
+                --replace `git describe --tags` artifacts/
