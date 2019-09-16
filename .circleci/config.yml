@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
       - run: go get github.com/mitchellh/gox
+      - run: go get github.com/gin-gonic/gin
+      - run: go get github.com/satori/go.uuid
       - run: gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" -output "dist/ncd_{{.OS}}_{{.Arch}}"
 
   publish-github-release:
