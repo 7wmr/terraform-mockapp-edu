@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
+	"net/http"
 	"os/exec"
 )
 
@@ -37,12 +38,18 @@ func NewRequest(c *gin.Context) {
 	var request Request
 	request.SetUUID()
 	request.SetHostname()
-	c.JSON(200, request)
+	c.JSON(http.StatusOK, request)
 }
 
 func main() {
 	port := flag.Int("port", 8080, "Web server port")
 	router := gin.Default()
+	router.LoadHTMLFiles("index.tmpl")
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Mock Application",
+		})
+	})
 
 	v1 := router.Group("api/v1")
 	{
