@@ -26,7 +26,7 @@ jobs:
             git describe --tags | tee dist/version.txt
       - persist_to_workspace:
           root: .
-          paths: dist
+          paths: .
 
   publish-github:
     docker:
@@ -45,8 +45,7 @@ jobs:
                 -r $CIRCLE_PROJECT_REPONAME \
                 -c $CIRCLE_SHA1 \
                 --delete $VERSION \
-                $VERSION \
-                ./dist/
+                "${VERSION}" ./dist/
 
 workflows:
   version: 2
