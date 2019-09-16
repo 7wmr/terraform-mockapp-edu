@@ -21,17 +21,11 @@ jobs:
       - store_artifacts:
           path: artifacts
 
-  deploy:
+  publish-github:
     docker:
       - image: cibuilds/github:0.10
-    requires:
-      - build
-    filters:
-      branches:
-        only: master
-      tags:
-        only: /^\d+\.\d+\.\d+$/
     steps:
+      - checkout
       - attach_workspace:
           at: ./artifacts
       - run: 
@@ -40,3 +34,23 @@ jobs:
             ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
                 --replace `git describe --tags` artifacts/
+
+workflows:
+  version: 2
+  build-and-publish:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - publish-github:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+          requires:
+            - build
+
