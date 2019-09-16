@@ -45,8 +45,8 @@ jobs:
                 -u $CIRCLE_PROJECT_USERNAME \
                 -r $CIRCLE_PROJECT_REPONAME \
                 -c $CIRCLE_SHA1 \
-                --delete $VERSION \
-                "${VERSION}" ./dist/
+                -delete $VERSION \
+                $VERSION dist/
 
 workflows:
   version: 2
