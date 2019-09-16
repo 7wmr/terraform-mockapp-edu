@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
     steps:
       - checkout
       - run: go get github.com/mitchellh/gox
