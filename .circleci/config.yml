@@ -2,12 +2,24 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9
+      - image: circleci/golang:1.12.9
     working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
     steps:
       - checkout
-      - run: go get github.com/mitchellh/gox
-      - run: gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" -output "dist/ncd_{{.OS}}_{{.Arch}}"
+      - run: 
+          name: Install gox build tool
+          command: go get github.com/mitchellh/gox
+      - run:
+          name: Install golang modules
+          command: |
+            go get github.com/gin-gonic/gin \
+            && go get github.com/satori/go.uuid
+      - run: 
+          name: Build golang application
+          command: |
+            gox -os "linux" -os "darwin" -arch "amd64" -output "artifacts/mockapp_{{.OS}}_{{.Arch}}"
+      - store_artifacts:
+          path: artifacts
 
   publish-github-release:
     docker:
@@ -16,4 +28,11 @@ jobs:
       - build
     branch: master
     steps:
-      - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+      - attach_workspace:
+          at: ./artifacts
+      - run: 
+          name: Publish release to GitHub
+          command: |
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME \
+                -r $CIRCLE_PROJECT_REPONAME \
+                --replace `git describe --tags` artifacts/
