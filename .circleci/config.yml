@@ -30,7 +30,7 @@ jobs:
 
   publish-github:
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.12.2
     working_directory: ~/app
     steps:
       - attach_workspace:
