@@ -26,7 +26,11 @@ jobs:
       - image: cibuilds/github:0.10
     requires:
       - build
-    branch: master
+    filters:
+      branches:
+        only: master
+      tags:
+        only: /^\d+\.\d+\.\d+$/
     steps:
       - attach_workspace:
           at: ./artifacts
