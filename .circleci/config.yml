@@ -2,14 +2,24 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9
+      - image: circleci/golang:1.12.9
     working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
     steps:
       - checkout
-      - run: go get github.com/mitchellh/gox
-      - run: go get github.com/gin-gonic/gin
-      - run: go get github.com/satori/go.uuid
-      - run: gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" -output "dist/ncd_{{.OS}}_{{.Arch}}"
+      - run: 
+          name: Install gox build tool
+          command: go get github.com/mitchellh/gox
+      - run:
+          name: Install golang modules
+          command: |
+            go get github.com/gin-gonic/gin \
+            && go get github.com/satori/go.uuid
+
+      - run: 
+          name: Build golang application
+          command: |
+            gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" \
+                -output "dist/ncd_{{.OS}}_{{.Arch}}"
 
   publish-github-release:
     docker:
