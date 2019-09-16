@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-app:
+  build:
     docker:
       - image: circleci/golang:1.12.9
     working_directory: /go/src/github.com/7wmr/terraform-mockapp-edu
@@ -24,14 +24,6 @@ jobs:
   publish-github:
     docker:
       - image: cibuilds/github:0.10
-    requires:
-      - build
-    filters:
-      branches:
-        only: 
-          - master
-      tags:
-        only: /^\d+\.\d+\.\d+$/
     steps:
       - checkout
       - attach_workspace:
@@ -47,5 +39,18 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build-app
-      - publish-github
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - publish-github:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+          requires:
+            - build
+
